@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webshark</title>
+    <meta charset="utf-8" />
+    <style>
+
+    body {
+      background: #02080F;
+      color: #CCC;
+      padding-bottom: 50px;
+    }
+
+    .packet-table {
+      display: table;
+      border: 1px solid #333;
+      border-spacing: 0;
+    }
+
+    .packet-table th {
+      padding: 0.2em 0.5em;
+      width: 200px;
+      text-align: left;
+      font-weight: normal;
+      border-right: 1px solid #333;
+    }
+    .packet-table tr:not(:last-child) th,
+    .packet-table tr:not(:last-child) td {
+      border-bottom: 1px solid #111;
+    }
+
+    .packet-table th p {
+      margin: 0;
+    }
+    .packet-table th p > strong {
+      display: block;
+      float: left;
+    }
+    .packet-table th p > .ip {
+      display: block;
+      text-align: right;
+    }
+    /*
+    .packet-table th p > .ip {
+      display: block;
+      float: left;
+    }
+    .packet-table th p > .port {
+      display: block;
+      text-align: right;
+    }
+    */
+
+    .packet-area {
+      position: relative;
+    }
+
+    .packet {
+      display: inline-block;
+      position: relative;
+      height: 20px;
+      background: #444;
+      border: 1px solid #000;
+    }
+    .packet.udp {
+      background: #A11;
+    }
+    .packet.tcp {
+      background: #1A1;
+    }
+
+    #info-window {
+      position: fixed;
+      top: 1em;
+      right: 1em;
+      width: 14em;
+      padding: 0.5em;
+      z-index: 5;
+      border: 1px solid #333;
+      background: rgba(0,0,0,0.9);
+    }
+    #info-window hr {
+      margin: 0.2em 0;
+      height: 1px;
+      background: #333;
+      border: 0 none;
+    }
+    #hexdump {
+      max-height: 10em;
+      overflow-y: auto;
+    }
+    #info-window pre {
+      margin: 0.2em;
+      text-align: left;
+    }
+    #hexdump .zero { color: #666666 }
+    #hexdump .low  { color: #80aa55 }
+    #hexdump .high { color: #8055d5 }
+    #hexdump .highlight { background: #222 }
+    #info-window dl {
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid #333;
+      font-family: monospace;
+    }
+    #info-window dl > dt {
+      display: block;
+      float: left;
+      font-weight: bold;
+    }
+    #info-window dl > dd {
+      display: block;
+      text-align: right;
+      margin: 0;
+      padding: 0;
+    }
+    #info-window dl > dt.block {
+      float: none;
+    }
+
+    #scrollbar {
+      position: fixed;
+      bottom: 0.5em;
+      left: 0.5em;
+      right: 0.5em;
+      height: 40px;
+      background: rgba(0,0,0,0.5);
+    }
+    </style>
+  </head>
+  <body>
+    <div id="info-window">
+      <div id="hexdump"></div>
+      <dl id="info"></dl>
+    </div>
+
+    <table id="packet-table" class="packet-table">
+      <!--
+      <tr>
+        <th>
+
+          <p>
+            <strong>Source</strong>
+            <span class="ip">192.168.0.1</span>
+            <span class="port">1234</span>
+          </p>
+          <p>
+            <strong>Destination</strong>
+            <span class="ip">123.45.67.89</span>
+            <span class="port">50123</span>
+          </p>
+
+        </th>
+
+        <td class="packet-area">
+          <div class="packet" style="left:100px"></div>
+          <div class="packet" style="left:150px"></div>
+          <div class="packet" style="left:200px"></div>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+
+          <p>
+            <strong>Source</strong>
+            <span class="ip">192.168.0.1</span>
+            <span class="port">1234</span>
+          </p>
+          <p>
+            <strong>Destination</strong>
+            <span class="ip">123.45.67.89</span>
+            <span class="port">50123</span>
+          </p>
+
+        </th>
+
+        <td class="packet-area">
+          <div class="packet" style="left:20px"></div>
+          <div class="packet" style="left:110px"></div>
+          <div class="packet" style="left:180px"></div>
+        </td>
+      </tr>
+      -->
+    </table>
+    <canvas id="scrollbar"></canvas>
+
+    <script src="js/binaryparser.js"></script>
+    <script src="js/pcap.js"></script>
+    <script src="webshark.js"></script>
+  </body>
+</html>
