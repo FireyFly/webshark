@@ -410,37 +410,6 @@ webshark.end = function () {
         appendInfo("TCPOptions", hexdump(packet.tcpHeader.options), 'block')
       }
 
-
-      /* NOTE: temporary deciphering
-      var db44Idx   = -1,
-          u8        = new Uint8Array(packet.payload),
-          payload   = packet.payload,
-          highlight = []
-      for (var i = 0; i < u8.length; i++) {
-        if (u8[i] == 0x44 && u8[i + 1] == 0xdb) {
-          db44Idx = i
-          break
-        }
-      }
-      if (db44Idx >= 2) {
-        db44Idx -= 2
-
-        var payload_ = packet.payload.slice(0),
-            u8_      = new Uint8Array(payload_)
-
-        var keystream = '0f 87 44 db .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. de 1c 5a ef b5 07 8a da 40 0e 76 7c c5 04 d3 9b 1b a5 94 ef ab e5 3c 55 .. .. .. .. 4c 82 55 85 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ad e5 9b c7 .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. 4a ff fb 3b .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. f1 22 9b c2 .. .. .. .. .. .. .. .. .. .. .. .. .. .. 3c 12 6a ce .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. b1 3b 7a 6f .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. 1a 3b 9a 2e .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..'
-                          .split(' ').map(function (s) { return s == '..'? null : parseInt(s, 16) })
-
-        for (var i = 0; i < Math.min(keystream.length, u8.length - db44Idx); i++) {
-          if (keystream[i] != null) {
-            u8_[db44Idx + i] ^= keystream[i]
-            highlight.push(db44Idx + i)
-          }
-        }
-
-        payload = payload_
-      }
-
       hexdumpEl.innerHTML = ''
       hexdumpEl.appendChild(hexdump(payload, highlight))
       /*/
@@ -483,28 +452,25 @@ webshark.end = function () {
 }
 
 
+//-- Bottom "scrollbar"
+var scrollbar = document.getElementById('scrollbar'),
+    table     = document.getElementById('packet-table')
+scrollbar.width = window.innerWidth - 16
+scrollbar.style.width = scrollbar.width + 'px'
+scrollbar.addEventListener('mousemove', scrollbarHandler, false)
+scrollbar.addEventListener('mousedown', scrollbarHandler, false)
 
-function fetchBlob(url, callback) {
-  var xhr = new XMLHttpRequest()
-  xhr.overrideMimeType('application/octet-stream')
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4) {
-      callback(null, xhr.response, xhr)
-    }
-  }
-  xhr.open('GET', url, true)
-  xhr.responseType = 'blob'
-  xhr.send()
+function scrollbarHandler(ev) {
+  if (ev.buttons != 1) return
+
+  var x = ev.layerX * parseInt(table.style.width) / scrollbar.width
+  window.scrollTo(x, window.scrollY)
 }
 
-//fetchBlob('data/sample-2.pcap', function (err, blob) {
-//fetchBlob('data/sample-behold-2.pcap', function (err, blob) {
-//fetchBlob('data/2014-12-06_homemenu-shop.pcap', function (err, blob) {
-//fetchBlob('data/2014-12-09_pending-sysupdate.pcap', function (err, blob) {
-fetchBlob('data/2014-12-10.pcap', function (err, blob) {
-  if (err) throw err
-  var reader = new FileReader()
 
+//-- File loader
+function loadFiles(files) {
+  var reader = new FileReader()
   reader.onload = function () {
     var initiated = false
 
@@ -522,20 +488,12 @@ fetchBlob('data/2014-12-10.pcap', function (err, blob) {
     webshark.end()
     console.log("Read %d records.", counter)
   }
-
-  reader.readAsArrayBuffer(blob)
-})
-
-var scrollbar = document.getElementById('scrollbar'),
-    table     = document.getElementById('packet-table')
-scrollbar.width = window.innerWidth - 16
-scrollbar.style.width = scrollbar.width + 'px'
-scrollbar.addEventListener('mousemove', scrollbarHandler, false)
-scrollbar.addEventListener('mousedown', scrollbarHandler, false)
-
-function scrollbarHandler(ev) {
-  if (ev.buttons != 1) return
-
-  var x = ev.layerX * parseInt(table.style.width) / scrollbar.width
-  window.scrollTo(x, window.scrollY)
+  reader.readAsArrayBuffer(files[0])
 }
+
+var el = document.querySelector('#file-selector')
+el.addEventListener('change', function () {
+  loadFiles(el.files)
+}, false)
+
+if (el.files.length > 0) loadFiles(el.files)

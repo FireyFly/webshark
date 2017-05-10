@@ -11,6 +11,13 @@
       padding-bottom: 50px;
     }
 
+    #topbar {
+      width: 100%;
+      padding: 0.2em;
+      margin-bottom: 0.4em;
+      background: #222;
+    }
+
     .packet-table {
       display: table;
       border: 1px solid #333;
@@ -86,7 +93,7 @@
       border: 0 none;
     }
     #hexdump {
-      max-height: 10em;
+      max-height: 20em;
       overflow-y: auto;
     }
     #info-window pre {
@@ -129,6 +136,9 @@
     </style>
   </head>
   <body>
+    <div id="topbar">
+      <input type="file" id="file-selector" />
+    </div>
     <div id="info-window">
       <div id="hexdump"></div>
       <dl id="info"></dl>

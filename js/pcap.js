@@ -9,7 +9,7 @@ function readPcap(buf, callback) {
     case 0xa1b23c4d:                    tsMultiplier = 1; break
     case 0x4d3cb2a1: bp.flipped = true; tsMultiplier = 1; break
     default:
-      throw new Error("Bad magic number for pcap file.")
+      throw new Error("Bad magic number for pcap file: " + magic.toString(16))
   }
 
   var header = bp.read([ { version_major: 'u16' },
