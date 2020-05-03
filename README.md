@@ -1,3 +1,8 @@
+> **NOTE:** this code is all pretty old and pretty haphazardly written; it was
+> really mostly designed to cover my needs for a reversing project at the
+> time.  It's not very user-friendly, and I'd suggest using this project more
+> as a reference rather than using it as is.
+
 **Webshark** is a tool for visualizing pcap (e.g. Wireshark) network captures
 on a timeline.  It was written as part of reverse-engineering efforts because
 the tabular view in Wireshark didn't visualize the timing aspects of the
