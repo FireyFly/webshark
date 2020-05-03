@@ -18,3 +18,5 @@ parse); captures in the newer pcapng format can be converted:
 
 ![Screenshot](meta/screenshot.png "Demo of Webshark viewing a pcap file")
 
+## License
+MIT license.
